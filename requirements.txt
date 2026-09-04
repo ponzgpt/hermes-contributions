@@ -1,0 +1,4 @@
+# Pinned below 2.0: mcp 2.x renamed mcp.server.fastmcp.FastMCP to
+# mcp.server.mcpserver.MCPServer, which 00_CORE/hermes_mcp_server.py does not
+# yet use. Migrating to the 2.x API is tracked separately.
+mcp>=1.9,<2.0

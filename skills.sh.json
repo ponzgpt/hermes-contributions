@@ -1,0 +1,14 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "groupings": [
+    {
+      "title": "Local PKM Agents",
+      "skills": [
+        "hermes-pkm",
+        "gtd-capture",
+        "para-router",
+        "johnny-decimal-router"
+      ]
+    }
+  ]
+}

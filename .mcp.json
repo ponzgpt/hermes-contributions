@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "hermes-pkm-vault": {
+      "command": "python3",
+      "args": ["00_CORE/hermes_mcp_server.py"],
+      "env": {
+        "HERMES_VAULT_ROOT": "${HERMES_VAULT_ROOT}"
+      }
+    }
+  }
+}
