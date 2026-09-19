@@ -6,18 +6,25 @@ This repository does not replace Hermes Agent or OpenClaw. It gives them a small
 
 The database is the local filesystem. Git is the audit trail. Markdown is the interface.
 
+## Install
+
+```bash
+hermes skills install ponzgpt/hermes-pkm-toolkit/skills/hermes-pkm   # plus gtd-capture, para-router, johnny-decimal-router
+```
+
+Then add the vault MCP server (below) so the skills can read and append to your notes.
+
 ## Compatibility Targets
 
 - Hermes Agent by Nous Research: `.hermes.md`, `AGENTS.md`, MCP stdio server, and `SKILL.md` skills.
 - OpenClaw by Peter Steinberger: `skills/<slug>/SKILL.md` workspace/project skills with short descriptions and hyphen-case names.
-- Claude Code and Codex: `CLAUDE.md`, `AGENTS.md`, and `.mcp.json`.
+- Claude Code and Codex: `AGENTS.md` and `.mcp.json`.
 
 ## Native Entry Points
 
 ```text
 AGENTS.md                         Shared agent instructions
 .hermes.md                        Hermes-native project context
-CLAUDE.md                         Claude Code compatibility context
 .mcp.json                         MCP server example for compatible clients
 skills.sh.json                    Skill grouping metadata
 skills/
@@ -90,6 +97,22 @@ Use `openclaw gateway restart` or start a new session if the skills watcher has 
 - `create_file`: create a new Markdown file without overwriting.
 
 All paths are relative to `HERMES_VAULT_ROOT`. The server blocks path traversal and rejects non-Markdown writes.
+
+## Johnny.Decimal Index Generator
+
+Define your areas and categories once, preview the folders, then create them. It validates ranges (`10`–`90`), keeps every category inside its area, rejects duplicate IDs and makes labels filesystem-safe. It only creates missing folders; it never moves or deletes anything.
+
+```json
+{"areas": [{"range": 10, "name": "Life admin",
+            "categories": [{"id": 11, "name": "Finance"}, {"id": 12, "name": "Health"}]}]}
+```
+
+```bash
+python3 00_CORE/jd_index.py jd.json                          # preview
+python3 00_CORE/jd_index.py jd.json --write "$HERMES_VAULT_ROOT"   # create
+```
+
+Ask Hermes to run the preview and show it to you before `--write`; the `johnny-decimal-router` skill then routes notes into those folders.
 
 ## Delta Tracking
 

@@ -1,27 +1,13 @@
-# Agent Context: hermes-pkm-toolkit
+# hermes-pkm-toolkit
+Skills and a local stdio MCP server that let Hermes Agent and OpenClaw work on Markdown/Obsidian vaults (GTD, PARA, Johnny.Decimal). A toolkit, not an app. Live: https://hermes-pkm-toolkit.technoir.cloud (README rendered).
 
-This repository publishes local-first PKM skills and a tiny MCP server for agents that operate Markdown vaults.
+## Commands
+- Check (before every commit and deploy): `.venv/bin/python -m unittest discover -s tests` (setup: `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`)
+- Deploy the page: `./scripts/deploy.sh`
 
-## Primary Runtime Targets
-
-- Hermes Agent by Nous Research: project context via `.hermes.md` or `AGENTS.md`, reusable workflows via `SKILL.md` skills, vault access via MCP.
-- OpenClaw by Peter Steinberger: workspace/project skills under `skills/<slug>/SKILL.md`, local-first gateway/workspace assumptions, short skill descriptions.
-- Claude Code and Codex: `CLAUDE.md` and `AGENTS.md` provide equivalent repo instructions.
-
-## Repository Contract
-
-- Keep all skill names lowercase hyphen-case.
-- Every installable skill lives in `skills/<skill-slug>/SKILL.md`.
-- Skills contain instructions only; framework logic must not be hardcoded into Python.
-- Python code only exposes local Markdown I/O and delta tracking.
-- The local filesystem is the database. No SQL, no NoSQL, no REST service.
-- Destructive vault changes require explicit human approval.
-
-## Verification
-
-Run these after code changes:
-
-```bash
-python3 -m py_compile 00_CORE/hermes_mcp_server.py 00_CORE/delta_tracker.py
-python3 00_CORE/delta_tracker.py /path/to/test-vault
-```
+## Non-negotiables
+1. Skills are instructions only; Python only does vault I/O, delta tracking and deterministic validation (`jd_index.py`), never PKM judgement.
+2. The filesystem is the database: no SQL, no REST, no state outside the vault except `.hermes/delta_tracker.json`.
+3. Nothing moves, overwrites or deletes vault notes; structural changes are proposals a human approves.
+4. `mcp` stays `<2.0` until `hermes_mcp_server.py` moves off `FastMCP`.
+5. Every skill lives in `skills/<hyphen-case>/SKILL.md` and is listed in `skills.sh.json`.

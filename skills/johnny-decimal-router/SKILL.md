@@ -17,7 +17,7 @@ Use this skill when the vault already has or wants stable numeric addresses.
 
 ## Procedure
 
-1. Inspect existing numbered folders before routing.
+1. Inspect existing numbered folders before routing. If the vault has none, draft a `jd.json` with the user and run `python3 00_CORE/jd_index.py jd.json` to preview; use `--write` only after they approve.
 2. Treat ranges `10-99` as user-owned address space.
 3. Prefer existing categories over new categories.
 4. If no category fits, propose a new category and wait.
