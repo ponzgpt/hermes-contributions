@@ -16,12 +16,11 @@ The guide is written for Javier's own learning first, then shared with classmate
 
 The official documentation and live model catalogue win. Changes should be reviewed against the generated machine-readable index before publication. Examples must not contain credentials, tokens or connection strings. Price points are illustrative combinations, not guarantees or financial advice.
 
-## Local verification
+## Check and deploy
 
 ```bash
-docker build -t hermes-field-guide:local .
-docker run --rm -d --name hermes-field-guide-test -p 8080:80 hermes-field-guide:local
-curl -fsS http://127.0.0.1:8080/healthz
-curl -fsS http://127.0.0.1:8080/ | grep -q 'Hermes Field Guide'
-docker rm -f hermes-field-guide-test
+./scripts/check.sh
+./scripts/deploy.sh
 ```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md).
