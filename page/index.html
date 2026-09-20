@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hermes Agent — The agent that grows with you</title>
+    <meta
+      name="description"
+      content="The self-improving AI agent built by Nous Research. Persistent memory, auto-generated skills, and one agent across every surface you already talk on. Open source, MIT."
+    />
+    <meta name="color-scheme" content="dark" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,800&family=Courier+Prime:wght@400;700&display=swap"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      /* Paint the remembered skin before first paint, so there is no flash. */
+      try {
+        document.documentElement.classList.add('js')
+        var s = JSON.parse(localStorage.getItem('hermes-skin-vars') || 'null')
+        if (s) {
+          var r = document.documentElement
+          for (var k in s.vars) r.style.setProperty(k, s.vars[k])
+          r.setAttribute('data-skin', s.slug)
+        }
+      } catch (e) {}
+    </script>
+    <script type="module" src="assets/js/site.js"></script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="notice" id="notice" hidden>
+      <a
+        class="notice__link"
+        href="https://github.com/NousResearch/hermes-agent/releases"
+        target="_blank"
+        rel="noopener"
+        >v0.21.0 — Bot Mode ships bundled and default-on in Hermes Desktop</a
+      >
+      <button class="notice__close" type="button" aria-label="Dismiss this notice">&times;</button>
+    </div>
+
+    <!-- ------------------------------------------------------------- nav -- -->
+    <header class="nav">
+      <div class="nav__inner">
+        <button
+          class="nav__mark"
+          id="palette-open"
+          type="button"
+          aria-label="Open the command palette (slash)"
+          title="Command palette · /"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M9.2 4.5 6 19.5M18 4.5 14.8 19.5M4 9.2h15M3.4 14.8h15"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="square"
+              fill="none"
+            />
+          </svg>
+        </button>
+
+        <a class="nav__brand" href="#top">Hermes<span>Agent</span></a>
+
+        <nav class="nav__links" aria-label="Main">
+          <a href="#connect">Connect</a>
+          <a href="#remember">Remember</a>
+          <a href="#skins">Skins</a>
+          <a href="#portal">Portal</a>
+          <a href="https://hermes-agent.nousresearch.com/docs/" target="_blank" rel="noopener"
+            >Docs</a
+          >
+        </nav>
+
+        <button class="chip" id="skin-next" type="button" title="Next skin · s">
+          <i class="chip__dot" aria-hidden="true"></i>
+          <span id="skin-name">Nous</span>
+        </button>
+
+        <a class="nav__cta" href="#install">Install</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ---------------------------------------------------------- hero -- -->
+      <section class="hero" id="top">
+        <div class="wrap wrap--text">
+          <p class="eyebrow">Open source &bull; MIT License</p>
+
+          <h1 class="hero__h1" id="headline" data-text="The agent&#10;that grows&#10;with you">
+            The agent that grows with you
+          </h1>
+
+          <p class="lede">
+            The self-improving AI agent built by Nous Research. A built-in learning loop creates
+            skills from experience, improves them during use, and builds a deepening model of who
+            you are across sessions.
+          </p>
+
+          <p class="label">Download Hermes Desktop app</p>
+          <div class="actions actions--center">
+            <a
+              class="btn btn--primary"
+              href="https://hermes-agent.nousresearch.com/"
+              target="_blank"
+              rel="noopener"
+              >Download for macOS <small>12+</small></a
+            >
+            <a
+              class="btn btn--quiet"
+              href="https://hermes-agent.nousresearch.com/"
+              target="_blank"
+              rel="noopener"
+              >Windows &amp; Linux &rarr;</a
+            >
+          </div>
+
+          <p class="label">Install via terminal</p>
+          <div class="install-box">
+            <div class="install-box__tabs" role="tablist" aria-label="Install command">
+              <button
+                type="button"
+                role="tab"
+                class="is-on"
+                aria-selected="true"
+                data-cmd="curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash"
+              >
+                macOS / Linux
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected="false"
+                data-cmd="iex (irm https://hermes-agent.nousresearch.com/install.ps1)"
+              >
+                Windows
+              </button>
+            </div>
+            <div class="install-box__row">
+              <code id="install-cmd"
+                >curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code
+              >
+              <button class="install-box__copy" id="install-copy" type="button">Copy</button>
+            </div>
+          </div>
+          <p class="dim dim--tight">
+            Linux, macOS, WSL2, Termux and native Windows. No prerequisites — it installs everything
+            automatically.
+          </p>
+        </div>
+
+        <figure class="shot wrap">
+          <div class="term term--chrome">
+            <div class="term__bar" aria-hidden="true">
+              <i></i><i></i><i></i><span>hermes — chat</span>
+            </div>
+            <pre class="term__body" id="hero-term" aria-label="A Hermes session"></pre>
+          </div>
+          <figcaption>
+            The <b id="shot-skin">Nous</b> skin. Six ship built in — press <kbd>s</kbd>, or run
+            <code>/skin</code>.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ------------------------------------------------------- mission -- -->
+      <section class="mission wrap wrap--text">
+        <p class="mission__line">One agent, one memory, every surface.</p>
+        <p class="mission__sub">
+          All data stays on your machine — no telemetry, no tracking, no cloud lock-in
+        </p>
+      </section>
+
+      <!-- ------------------------------------------------------- connect -- -->
+      <section class="stage" id="connect">
+        <div class="wrap stage__grid">
+          <div class="stage__text">
+            <p class="eyebrow">#1 Connect</p>
+            <h2>Lives everywhere.</h2>
+            <p>
+              Telegram, Discord, Slack, WhatsApp, Signal, Email, CLI — and a growing list of
+              platforms. The messaging gateway reaches Teams, Matrix and 20+ more.
+            </p>
+            <ul class="tags" role="list">
+              <li>Telegram</li>
+              <li>Discord</li>
+              <li>Slack</li>
+              <li>WhatsApp</li>
+              <li>Signal</li>
+              <li>Matrix</li>
+              <li>Teams</li>
+              <li>Email</li>
+              <li>CLI</li>
+            </ul>
+          </div>
+          <div class="stage__media">
+            <div class="term">
+              <pre class="term__body" id="gateway-term" aria-label="Starting the gateway"></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------ remember -- -->
+      <section class="stage stage--flip" id="remember">
+        <div class="wrap stage__grid">
+          <div class="stage__text">
+            <p class="eyebrow">#2 Remember</p>
+            <h2>Persistent memory.</h2>
+            <p>
+              It learns your projects, auto-generates skills, and never forgets how it solved a
+              problem. Memory that grows across sessions; skills are procedural memory the agent
+              creates and reuses.
+            </p>
+            <p class="try">Scroll on — that is the learning loop.</p>
+          </div>
+          <div class="stage__media">
+            <ol class="loop" id="loop" role="list">
+              <li><b>Work</b><span>a real task, in your real repo</span></li>
+              <li><b>Recall</b><span>cross-session recall via FTS5 search</span></li>
+              <li><b>Keep</b><span>agent-curated memory</span></li>
+              <li><b>Skill</b><span>autonomous skill creation, improved during use</span></li>
+            </ol>
+            <pre class="grew" id="grew" aria-label="Skills the agent has written"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------- command -- -->
+      <section class="stage" id="commands">
+        <div class="wrap stage__grid">
+          <div class="stage__text">
+            <p class="eyebrow">#3 Drive</p>
+            <h2>Slash-command autocomplete.</h2>
+            <p>
+              A real terminal interface with multiline editing, slash-command autocomplete and
+              streaming tool output. <code>Tab</code> accepts the suggestion or completes the
+              command.
+            </p>
+            <ul class="keys" role="list">
+              <li>
+                <span><code>/model</code></span
+                ><span>show or change the current model</span>
+              </li>
+              <li>
+                <span><code>/tools</code></span
+                ><span>list currently available tools</span>
+              </li>
+              <li>
+                <span><code>/context</code></span
+                ><span>visual context-usage breakdown</span>
+              </li>
+              <li>
+                <span><code>/bg</code></span
+                ><span>run a prompt in a background session</span>
+              </li>
+            </ul>
+            <p class="try">
+              Try it here: press <kbd>/</kbd> for the palette, <kbd>?</kbd> for the shortcuts.
+            </p>
+          </div>
+          <div class="stage__media">
+            <button class="fake-input" id="palette-open-2" type="button">
+              <span class="fake-input__slash">/</span>
+              <span class="fake-input__ghost">type a command…</span>
+              <kbd>/</kbd>
+            </button>
+            <ul class="cmdlist" id="cmd-preview" role="list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------------- skins -- -->
+      <section class="stage stage--flip" id="skins">
+        <div class="wrap stage__grid">
+          <div class="stage__text">
+            <p class="eyebrow">#4 Style</p>
+            <h2>The active skin.</h2>
+            <p>
+              A skin sets the semantic colours — background, <code>ui_accent</code>,
+              <code>ui_tool</code>, <code>ui_ok</code>, <code>ui_warn</code>,
+              <code>ui_error</code> — across the whole session. Six ship built in;
+              <code>/skin</code> shows or switches the active one, and your own YAML can join them.
+            </p>
+            <p class="try">This page wears them too. Press <kbd>s</kbd>, or pick one.</p>
+          </div>
+          <div class="stage__media">
+            <ul class="skins-grid" id="skin-list" role="list"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- --------------------------------------------------------- stats -- -->
+      <section class="stats wrap">
+        <div><strong>60+</strong><span>Built-in tools</span></div>
+        <div><strong>300+</strong><span>Models via Nous Portal</span></div>
+        <div><strong>7</strong><span>Terminal backends</span></div>
+        <div><strong>MIT</strong><span>License</span></div>
+      </section>
+      <p class="spec wrap">
+        Isolated subagents with their own conversations, terminals and Python RPC scripts, for
+        zero-context-cost pipelines. Seven terminal backends — local, Docker, SSH, Singularity,
+        Modal, Daytona and Vercel Sandbox — with container hardening and namespace isolation.
+        Scheduled automations through a built-in cron scheduler, delivered to any platform.
+      </p>
+
+      <!-- ---------------------------------------------------------- bots -- -->
+      <section class="bots wrap">
+        <p class="eyebrow">Bot Mode</p>
+        <h2>A roster of named bots.</h2>
+        <p class="lede">
+          Named Bots with their own model, memory, skills, routines and chats — bundled and
+          default-on in Hermes Desktop.
+        </p>
+        <ul class="bots__list" role="list">
+          <li>
+            <b>Researcher</b><small>Web search · vision · MCP</small
+            ><span>Its own memory, so the citations stay with it.</span>
+          </li>
+          <li>
+            <b>Ops</b><small>Cron · SSH backend · Slack</small
+            ><span>Its own routines, running unattended through the gateway.</span>
+          </li>
+          <li>
+            <b>Reviewer</b><small>Docker sandbox · worktrees</small
+            ><span>Its own skills, learned on your codebase.</span>
+          </li>
+          <li>
+            <b>Inbox</b><small>Email · Telegram · voice mode</small
+            ><span>Its own chats, and it never mixes them up.</span>
+          </li>
+        </ul>
+        <p class="dim">A roster is yours to name. These four are an example of the shape.</p>
+      </section>
+
+      <!-- -------------------------------------------------------- portal -- -->
+      <section class="portal wrap" id="portal">
+        <div class="portal__inner">
+          <p class="eyebrow">Nous Portal &bull; Free · Plus · Super · Ultra</p>
+          <h2>300+ cutting-edge models.</h2>
+          <p class="lede">
+            All paid tiers include monthly credits for use in Hermes Agent, access to 300+
+            cutting-edge models and built-in tool use. Or bring your own key — OpenRouter, OpenAI
+            and custom endpoints all work, and <code>/model</code> switches without code changes.
+          </p>
+          <div class="portal__cmd">
+            <code>hermes setup --portal</code><span>one command, and you're ready</span>
+          </div>
+          <div class="actions actions--center">
+            <a
+              class="btn btn--primary"
+              href="https://portal.nousresearch.com/"
+              target="_blank"
+              rel="noopener"
+              >View all our plans &rarr;</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------- install -- -->
+      <section class="install wrap" id="install">
+        <div class="wrap--text install__text">
+          <h2>Running in one command.</h2>
+          <ol class="steps">
+            <li>
+              <span
+                >Paste the installer. No prerequisites — it installs everything automatically.</span
+              >
+            </li>
+            <li>
+              <span>Run <code>hermes setup --portal</code>, or bring your own API key.</span>
+            </li>
+            <li>
+              <span>Type <code>hermes</code> to start an interactive session.</span>
+            </li>
+          </ol>
+          <div class="actions">
+            <a
+              class="btn btn--primary"
+              href="https://github.com/NousResearch/hermes-agent"
+              target="_blank"
+              rel="noopener"
+              >Get Hermes Agent <small>v0.21.0 · MIT</small></a
+            >
+            <a
+              class="btn btn--quiet"
+              href="https://hermes-agent.nousresearch.com/docs/"
+              target="_blank"
+              rel="noopener"
+              >Quickstart &rarr;</a
+            >
+          </div>
+          <p class="dim">
+            Runs on a $5 VPS, a GPU cluster, or serverless infrastructure that costs nearly nothing
+            when idle. Stuck? Ask in
+            <a href="https://discord.gg/NousResearch" target="_blank" rel="noopener">Discord</a>.
+          </p>
+        </div>
+      </section>
+
+      <!-- ------------------------------------------------------ releases -- -->
+      <section class="news wrap">
+        <div class="wrap--text">
+          <h2>Latest releases.</h2>
+        </div>
+        <ul class="post-list" role="list">
+          <li>
+            <time>v0.21.0</time><span>Skins get user YAML; <code>/steer</code> lands</span>
+          </li>
+          <li>
+            <time>v0.20.3</time><span>Bot Mode bundled and default-on in Hermes Desktop</span>
+          </li>
+          <li>
+            <time>v0.20.0</time><span>Bot Mode: agent profiles become a roster of named bots</span>
+          </li>
+          <li><time>v0.19.0</time><span>Vercel Sandbox joins the terminal backends</span></li>
+          <li><time>v0.18.0</time><span>Voice mode in Discord VC</span></li>
+        </ul>
+        <p class="dim">
+          <a
+            href="https://github.com/NousResearch/hermes-agent/releases"
+            target="_blank"
+            rel="noopener"
+            >All releases &rarr;</a
+          >
+        </p>
+      </section>
+    </main>
+
+    <!-- ---------------------------------------------------------- footer -- -->
+    <footer class="footer">
+      <div class="footer__inner">
+        <div class="footer__cols">
+          <div>
+            <h3>Hermes Agent</h3>
+            <a href="https://hermes-agent.nousresearch.com/docs/" target="_blank" rel="noopener"
+              >Documentation</a
+            >
+            <a
+              href="https://hermes-agent.nousresearch.com/docs/user-guide/cli/"
+              target="_blank"
+              rel="noopener"
+              >CLI reference</a
+            >
+            <a href="#skins">Skins</a>
+            <a href="#connect">Messaging gateway</a>
+          </div>
+          <div>
+            <h3>Source</h3>
+            <a href="https://github.com/NousResearch/hermes-agent" target="_blank" rel="noopener"
+              >GitHub</a
+            >
+            <a
+              href="https://github.com/NousResearch/hermes-agent/releases"
+              target="_blank"
+              rel="noopener"
+              >Releases</a
+            >
+            <a
+              href="https://hub.docker.com/r/nousresearch/hermes-agent"
+              target="_blank"
+              rel="noopener"
+              >Docker image</a
+            >
+          </div>
+          <div>
+            <h3>Nous</h3>
+            <a href="https://nousresearch.com" target="_blank" rel="noopener">Nous Research</a>
+            <a href="https://portal.nousresearch.com/" target="_blank" rel="noopener"
+              >Nous Portal</a
+            >
+            <a href="https://nousresearch.com/hermes3" target="_blank" rel="noopener"
+              >Hermes models</a
+            >
+          </div>
+          <div>
+            <h3>Community</h3>
+            <a href="https://discord.gg/NousResearch" target="_blank" rel="noopener">Discord</a>
+            <a href="https://x.com/NousResearch" target="_blank" rel="noopener">X</a>
+          </div>
+        </div>
+        <pre class="footer__art" id="footer-art" aria-hidden="true"></pre>
+        <p class="footer__line">
+          An unofficial fan page for <b>Hermes Agent</b>, the open-source agent by Nous Research.
+          Not affiliated with Nous Research. Hermes Agent is MIT licensed.
+        </p>
+      </div>
+    </footer>
+
+    <!-- --------------------------------------------------------- palette -- -->
+    <dialog class="palette" id="palette" aria-label="Command palette">
+      <form class="palette__form" method="dialog">
+        <div class="palette__field">
+          <span class="palette__slash" aria-hidden="true">/</span>
+          <input
+            class="palette__input"
+            id="palette-input"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="type a command…"
+            aria-label="Filter commands"
+          />
+          <kbd>esc</kbd>
+        </div>
+        <ul class="palette__list" id="palette-list" role="listbox" aria-label="Commands"></ul>
+        <p class="palette__foot">
+          <kbd>&uarr;</kbd><kbd>&darr;</kbd> move · <kbd>tab</kbd> complete · <kbd>enter</kbd> run
+        </p>
+      </form>
+    </dialog>
+
+    <!-- ------------------------------------------------------- shortcuts -- -->
+    <dialog class="sheet" id="sheet" aria-label="Keyboard shortcuts">
+      <form method="dialog">
+        <h3>Shortcuts</h3>
+        <ul class="sheet__list" id="sheet-list" role="list"></ul>
+        <p class="sheet__foot">Real bindings from the Hermes CLI. <kbd>esc</kbd> to close.</p>
+      </form>
+    </dialog>
+
+    <p class="toast" id="toast" role="status" aria-live="polite"></p>
+  </body>
+</html>
