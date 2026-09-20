@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{TITLE}} · hermes-contributions</title>
+    <meta name="description" content="{{SUBTITLE}}" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #1b1b1b;
+        --bg: #fbfbf8;
+        --muted: #5a5a5a;
+        --line: #ddd;
+        --code: #f0efe9;
+        --accent: #0b5cad;
+        --flag: #8d302d;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #e8e6e1;
+          --bg: #141414;
+          --muted: #9a9a9a;
+          --line: #2e2e2e;
+          --code: #1f1f1f;
+          --accent: #7fb3ff;
+          --flag: #e08c88;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          17px/1.62 ui-sans-serif,
+          system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 48rem;
+        margin: 0 auto;
+        padding: 1.5rem 1rem 4rem;
+      }
+      a {
+        color: var(--accent);
+        text-underline-offset: 3px;
+      }
+      nav.parts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.1rem;
+        padding: 0.9rem 0;
+        border-bottom: 1px solid var(--line);
+        font-size: 0.9rem;
+      }
+      nav.parts a[aria-current] {
+        color: var(--fg);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      h1 {
+        font-size: 2.1rem;
+        line-height: 1.15;
+        margin: 2rem 0 0.4rem;
+      }
+      .subtitle {
+        color: var(--muted);
+        margin: 0 0 1.5rem;
+      }
+      h2 {
+        margin-top: 2.4rem;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 0.3rem;
+        font-size: 1.4rem;
+      }
+      h3 {
+        margin-top: 1.8rem;
+        font-size: 1.1rem;
+      }
+      pre,
+      code {
+        font:
+          13.5px/1.55 ui-monospace,
+          SFMono-Regular,
+          Menlo,
+          monospace;
+        background: var(--code);
+        border-radius: 4px;
+      }
+      code {
+        padding: 0.1em 0.3em;
+      }
+      pre {
+        padding: 1rem;
+        overflow-x: auto;
+      }
+      pre code {
+        padding: 0;
+        background: none;
+      }
+      table {
+        border-collapse: collapse;
+        display: block;
+        overflow-x: auto;
+        font-size: 0.93rem;
+      }
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 0.4rem 0.6rem;
+        text-align: left;
+        vertical-align: top;
+      }
+      blockquote {
+        border-left: 3px solid var(--flag);
+        margin: 1.5rem 0;
+        padding: 0.1rem 0 0.1rem 1rem;
+        color: var(--muted);
+      }
+      .notice {
+        border: 1px solid var(--flag);
+        border-left-width: 3px;
+        border-radius: 4px;
+        padding: 0.85rem 1rem;
+        margin: 2.5rem 0 0;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      .notice strong {
+        color: var(--flag);
+      }
+      img {
+        max-width: 100%;
+      }
+      footer {
+        margin-top: 2rem;
+        color: var(--muted);
+        font-size: 0.87rem;
+        border-top: 1px solid var(--line);
+        padding-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <nav class="parts">{{NAV}}</nav>
+      {{BODY}} {{NOTICE}}
+      <footer>
+        <a href="https://github.com/ponzgpt/hermes-contributions"
+          >github.com/ponzgpt/hermes-contributions</a
+        >
+        · by <a href="https://javierponz.technoir.cloud">Javier Ponz</a> · MIT · official docs:
+        <a href="https://hermes-agent.nousresearch.com/docs">hermes-agent.nousresearch.com/docs</a>
+      </footer>
+    </main>
+  </body>
+</html>

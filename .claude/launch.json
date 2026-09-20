@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "hermes-contributions",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "serve@14", "dist", "-l", "4399", "--no-clipboard"],
+      "port": 4399,
+      "autoPort": false
+    }
+  ]
+}

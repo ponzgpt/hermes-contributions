@@ -29,24 +29,6 @@ function toast(message) {
   toastTimer = setTimeout(() => toastEl.classList.remove('is-on'), 2200)
 }
 
-/* ---------------------------------------------------------------- notice -- */
-const NOTICE_KEY = 'hermes-notice-dismissed'
-const NOTICE_ID = 'v0.21.0'
-const notice = $('#notice')
-try {
-  if (localStorage.getItem(NOTICE_KEY) !== NOTICE_ID) notice.hidden = false
-} catch {
-  notice.hidden = false
-}
-notice.querySelector('.notice__close').addEventListener('click', () => {
-  notice.hidden = true
-  try {
-    localStorage.setItem(NOTICE_KEY, NOTICE_ID)
-  } catch {
-    /* nothing to remember it with */
-  }
-})
-
 /* ----------------------------------------------------------------- skins -- */
 let current = skinFromQuery(location.search) || readStoredSkin()
 
@@ -119,28 +101,26 @@ function renderTerm(el, lines, done) {
     (done ? '\n<span class="in"><span class="cursor"></span></span>' : '')
 }
 
+/* Real output from ./0th next in two states — the shell-not-reloaded case that
+   stops most newcomers, then the finished one. Copied from the script in
+   ../../onboarding/0th and held to it by tests/hero.test.js: a marketing page
+   that invents its own screenshots is exactly what this repo is not. */
 const HERO_LINES = [
-  { kind: 'in', text: 'the staging deploy failed again, same as tuesday' },
-  { kind: 'tool', text: '◇ memory.search  "staging deploy" → 3 hits, oldest 6 weeks' },
-  { kind: 'out', text: 'Tuesday it was the migration lock. Checking whether it is that again.' },
-  { kind: 'tool', text: '◇ terminal(docker)  ssh deploy@staging "pg_locks | grep migration"' },
-  { kind: 'out', text: 'Same lock, same table. I cleared it and the deploy is through.' },
-  { kind: 'tool', text: '◇ skill.write  skills/staging-migration-lock.md' },
-  { kind: 'note', text: '  wrote a skill · third time is the charm' },
-  { kind: 'in', text: '/status' },
-  { kind: 'note', text: '  hermes-4 · profile ops · 12k tokens · 4m18s' },
-]
-
-const GATEWAY_LINES = [
-  { kind: 'in', text: 'hermes gateway' },
-  { kind: 'tool', text: '◇ telegram   connected  @your_hermes_bot' },
-  { kind: 'tool', text: '◇ discord    connected  3 guilds, 1 voice channel' },
-  { kind: 'tool', text: '◇ slack      connected  #eng, #alerts' },
-  { kind: 'tool', text: '◇ signal     connected' },
-  { kind: 'tool', text: '◇ email      polling every 60s' },
+  { kind: 'in', text: './0th next' },
+  { kind: 'note', text: 'Next step' },
+  { kind: 'out', text: '  ! Hermes is installed, but this shell cannot see it.' },
   { kind: 'note', text: '' },
-  { kind: 'note', text: '  one memory behind all five' },
-  { kind: 'note', text: '  cron: 07:00 briefing → telegram' },
+  { kind: 'out', text: '  source ~/.bashrc   # or ~/.zshrc, or open a new terminal' },
+  { kind: 'note', text: '' },
+  { kind: 'note', text: '    This is the number one reason people think the install failed.' },
+  { kind: 'note', text: '' },
+  { kind: 'in', text: './0th next' },
+  { kind: 'note', text: 'Next step' },
+  { kind: 'tool', text: '  \u2713 Installed, configured, and a provider is set.' },
+  { kind: 'note', text: '' },
+  { kind: 'out', text: '  Prove it works before adding anything else:' },
+  { kind: 'note', text: '' },
+  { kind: 'out', text: '  hermes' },
 ]
 
 play($('#hero-term'), HERO_LINES, { render: renderTerm, speed: 2.2 })
@@ -274,49 +254,6 @@ $('#install-copy').addEventListener('click', async () => {
     toast('Select and copy it')
   }
 })
-
-/* -------------------------------------------------------------- the loop -- */
-const SKILLS_WRITTEN = [
-  '✓ skills/staging-migration-lock.md      written  · after 3 runs',
-  '✓ skills/pg-restore-from-wal.md         written  · after 1 run',
-  '✓ skills/release-notes-from-git.md      improved · v4',
-  '✓ skills/triage-sentry-digest.md        improved · v2',
-  '✓ skills/spin-up-review-app.md          written  · after 2 runs',
-  '  …247 more in ~/.hermes/skills',
-]
-
-const grew = $('#grew')
-const loopItems = $$('#loop li')
-let loopStarted = false
-
-function runLoop() {
-  if (loopStarted) return
-  loopStarted = true
-  loopItems.forEach((li, i) => setTimeout(() => li.classList.add('is-on'), i * 420))
-  SKILLS_WRITTEN.forEach((line, i) => {
-    setTimeout(
-      () => {
-        grew.textContent += (grew.textContent ? '\n' : '') + line
-      },
-      loopItems.length * 420 + i * 260
-    )
-  })
-}
-
-/* -------------------------------------------------------------- reveals -- */
-const io = new IntersectionObserver(
-  (entries) => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue
-      io.unobserve(entry.target)
-      if (entry.target.id === 'remember') runLoop()
-      if (entry.target.id === 'connect')
-        play($('#gateway-term'), GATEWAY_LINES, { render: renderTerm, speed: 2.6 })
-    }
-  },
-  { rootMargin: '-15% 0px' }
-)
-;['#remember', '#connect'].forEach((sel) => io.observe($(sel)))
 
 /* ---------------------------------------------------------- footer curve -- */
 /* Skills the agent has written, session over session. It only goes up. */

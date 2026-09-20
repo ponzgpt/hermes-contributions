@@ -1,0 +1,28 @@
+{
+  "name": "hermes-contributions",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "What one heavy user built around Hermes Agent, offered back. Unaffiliated with Nous Research.",
+  "scripts": {
+    "check": "./scripts/check.sh",
+    "dev": "npm run build && npx --yes serve@14 dist -l 4321",
+    "build": "node scripts/build.mjs",
+    "freshness": "node scripts/freshness.mjs",
+    "refresh": "node scripts/refresh-upstream.mjs",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "jsdom": "^26.0.0",
+    "prettier": "^3.4.2",
+    "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "marked": "^15.0.0"
+  }
+}

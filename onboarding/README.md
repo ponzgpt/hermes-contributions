@@ -6,7 +6,7 @@ tells you the one next thing to do.
 
 > **This is unofficial and temporary.** Nous Research wrote the installer, the
 > docs and the tool. Their documentation is genuinely good — the problem is that
-> there is a *lot* of it, and a newcomer cannot tell which twenty per cent to
+> there is a _lot_ of it, and a newcomer cannot tell which twenty per cent to
 > read first. That is the only gap this fills. When Nous ships a first-run
 > experience that decides for you, delete this repository.
 
@@ -22,8 +22,8 @@ gateway, skills, plugins, MCP servers, cron, profiles, secrets backends, an
 egress proxy, checkpoints, bot mode. Every one of those is worth having
 eventually, and none of them is worth having in the first ten minutes.
 
-A newcomer reads that and does not think *"what a rich tool"*. They think
-*"which of these do I need before it will answer me?"*
+A newcomer reads that and does not think _"what a rich tool"_. They think
+_"which of these do I need before it will answer me?"_
 
 The answer is: **four things.** This repository is that answer, and a script
 that checks which of the four you have done.
@@ -79,13 +79,13 @@ subscription, and it is the fastest way to a working agent by a wide margin.
 
 **If you would rather not:**
 
-| You have | Run | Notes |
-|---|---|---|
-| An OpenRouter key | `hermes model` → OpenRouter | Many models, one key, pay per token |
-| An Anthropic key or Max plan | `hermes model` → Anthropic | OAuth needs Max **plus** credits |
-| A ChatGPT or Codex subscription | `hermes model` → ChatGPT/Codex | Device-code login |
-| A model on your own hardware | `hermes model` → custom endpoint | See [local models](#running-a-model-on-your-own-hardware) |
-| No idea | `hermes setup --portal` | Come back and change it later; it is one command |
+| You have                        | Run                              | Notes                                                     |
+| ------------------------------- | -------------------------------- | --------------------------------------------------------- |
+| An OpenRouter key               | `hermes model` → OpenRouter      | Many models, one key, pay per token                       |
+| An Anthropic key or Max plan    | `hermes model` → Anthropic       | OAuth needs Max **plus** credits                          |
+| A ChatGPT or Codex subscription | `hermes model` → ChatGPT/Codex   | Device-code login                                         |
+| A model on your own hardware    | `hermes model` → custom endpoint | See [local models](#running-a-model-on-your-own-hardware) |
+| No idea                         | `hermes setup --portal`          | Come back and change it later; it is one command          |
 
 You can change provider at any time with `hermes model`. Nothing about this
 decision is permanent, which is the part nobody tells you, and which is why
@@ -110,38 +110,43 @@ suspects instead of one. Get a clean conversation first.
 Everything below is good and you will want some of it. None of it belongs in
 your first session.
 
-| Thing | What it is | Come back when |
-|---|---|---|
-| **Gateway** | Puts Hermes on Telegram, Discord, Slack, WhatsApp, Signal, email | You want to message it from your phone |
-| **Skills** | Markdown files that teach it a capability | You have repeated yourself twice |
-| **Cron** | Scheduled runs | You want a morning briefing |
-| **MCP servers** | Tools it can call | You need it to reach a system it cannot reach |
-| **Profiles / Bot mode** | Several named agents, each with its own memory | One agent is not enough |
-| **Egress proxy** | Controls and credentials for outbound traffic | You are deploying this somewhere shared |
-| **Checkpoints** | Filesystem snapshots before destructive edits | You let it write to a real repository |
-| **Secrets backends** | 1Password, Bitwarden | Your keys should not sit in a dotfile |
+| Thing                   | What it is                                                       | Come back when                                |
+| ----------------------- | ---------------------------------------------------------------- | --------------------------------------------- |
+| **Gateway**             | Puts Hermes on Telegram, Discord, Slack, WhatsApp, Signal, email | You want to message it from your phone        |
+| **Skills**              | Markdown files that teach it a capability                        | You have repeated yourself twice              |
+| **Cron**                | Scheduled runs                                                   | You want a morning briefing                   |
+| **MCP servers**         | Tools it can call                                                | You need it to reach a system it cannot reach |
+| **Profiles / Bot mode** | Several named agents, each with its own memory                   | One agent is not enough                       |
+| **Egress proxy**        | Controls and credentials for outbound traffic                    | You are deploying this somewhere shared       |
+| **Checkpoints**         | Filesystem snapshots before destructive edits                    | You let it write to a real repository         |
+| **Secrets backends**    | 1Password, Bitwarden                                             | Your keys should not sit in a dotfile         |
 
 The full documentation is at
 [hermes-agent.nousresearch.com/docs](https://hermes-agent.nousresearch.com/docs).
-Read it *after* step 4, not before.
+Read it _after_ step 4, not before.
 
 ---
 
 ## The script
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/ponzgpt/0th-hermes/main/0th -o 0th && sh 0th
+curl -fsSL https://hermes-contributions.technoir.cloud/0th -o 0th && sh 0th
 ```
 
-It is one self-contained POSIX shell script; `git clone https://github.com/ponzgpt/0th-hermes.git` works too.
+It is one self-contained POSIX shell script; `git clone https://github.com/ponzgpt/hermes-contributions.git` works too.
 
-| Command | What it does |
-|---|---|
-| `./0th` or `./0th next` | Looks at your machine and prints the one next step |
-| `./0th check` | Preflight: git, curl, xz, disk space, existing install |
-| `./0th install` | Runs the official installer, then tells you to reload your shell |
-| `./0th doctor` | `hermes doctor`, plus the four checks it does not cover |
-| `./0th local URL` | Points Hermes at a local OpenAI-compatible endpoint |
+> The older URL, `raw.githubusercontent.com/ponzgpt/0th-hermes/main/0th`, still
+> resolves and always will — people piped it into a shell, so that repository is
+> archived rather than deleted. It is frozen at the day it moved. The URL above
+> is the maintained one.
+
+| Command                 | What it does                                                     |
+| ----------------------- | ---------------------------------------------------------------- |
+| `./0th` or `./0th next` | Looks at your machine and prints the one next step               |
+| `./0th check`           | Preflight: git, curl, xz, disk space, existing install           |
+| `./0th install`         | Runs the official installer, then tells you to reload your shell |
+| `./0th doctor`          | `hermes doctor`, plus the four checks it does not cover          |
+| `./0th local URL`       | Points Hermes at a local OpenAI-compatible endpoint              |
 
 `next` is the useful one. It walks the state of your machine in order and stops
 at the first thing that is not done, so you get one instruction rather than a
@@ -222,8 +227,8 @@ Set `HERMES_HOME` to move all of that somewhere else.
 I am a technical support person by trade. Ten years of it, most of them stood in
 front of somebody holding a machine that was not doing what they wanted.
 
-The gap between *"the documentation is complete"* and *"a normal person can get
-this working"* is not a documentation problem. It is a **decision** problem. The
+The gap between _"the documentation is complete"_ and _"a normal person can get
+this working"_ is not a documentation problem. It is a **decision** problem. The
 docs correctly describe twenty providers because there are twenty providers. The
 newcomer needs one of them named, with permission to change it later.
 
@@ -243,4 +248,4 @@ That is the only thing this repository does.
 - **Meant to become unnecessary.** The best outcome is that Nous ships a first
   run that makes this pointless.
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](../LICENSE).

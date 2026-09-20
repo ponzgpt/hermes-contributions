@@ -1,4 +1,4 @@
-# hermes-pkm-toolkit
+# PKM toolkit
 
 Native skills and MCP primitives for agents that operate local Markdown/Obsidian PKM vaults.
 
@@ -9,7 +9,7 @@ The database is the local filesystem. Git is the audit trail. Markdown is the in
 ## Install
 
 ```bash
-hermes skills install ponzgpt/hermes-pkm-toolkit/skills/hermes-pkm   # plus gtd-capture, para-router, johnny-decimal-router
+hermes skills install ponzgpt/hermes-contributions/pkm-toolkit/skills/hermes-pkm   # plus gtd-capture, para-router, johnny-decimal-router
 ```
 
 Then add the vault MCP server (below) so the skills can read and append to your notes.
@@ -61,13 +61,13 @@ Recommended Hermes config shape:
 mcp_servers:
   hermes-pkm-vault:
     command: "python3"
-    args: ["/absolute/path/hermes-pkm-toolkit/00_CORE/hermes_mcp_server.py"]
+    args: ["/absolute/path/hermes-contributions/pkm-toolkit/00_CORE/hermes_mcp_server.py"]
     env:
       HERMES_VAULT_ROOT: "/absolute/path/to/vault"
 
 skills:
   external_dirs:
-    - /absolute/path/hermes-pkm-toolkit/skills
+    - /absolute/path/hermes-contributions/pkm-toolkit/skills
 ```
 
 Then invoke `/hermes-pkm` or let Hermes select the skill naturally.
@@ -78,10 +78,10 @@ OpenClaw loads workspace skills from `<workspace>/skills` and project/personal s
 
 ```bash
 mkdir -p ~/.openclaw/workspace/skills
-ln -s /absolute/path/hermes-pkm-toolkit/skills/hermes-pkm ~/.openclaw/workspace/skills/hermes-pkm
-ln -s /absolute/path/hermes-pkm-toolkit/skills/gtd-capture ~/.openclaw/workspace/skills/gtd-capture
-ln -s /absolute/path/hermes-pkm-toolkit/skills/para-router ~/.openclaw/workspace/skills/para-router
-ln -s /absolute/path/hermes-pkm-toolkit/skills/johnny-decimal-router ~/.openclaw/workspace/skills/johnny-decimal-router
+ln -s /absolute/path/hermes-contributions/pkm-toolkit/skills/hermes-pkm ~/.openclaw/workspace/skills/hermes-pkm
+ln -s /absolute/path/hermes-contributions/pkm-toolkit/skills/gtd-capture ~/.openclaw/workspace/skills/gtd-capture
+ln -s /absolute/path/hermes-contributions/pkm-toolkit/skills/para-router ~/.openclaw/workspace/skills/para-router
+ln -s /absolute/path/hermes-contributions/pkm-toolkit/skills/johnny-decimal-router ~/.openclaw/workspace/skills/johnny-decimal-router
 openclaw skills list
 ```
 
