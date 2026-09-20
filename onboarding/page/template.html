@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+  :root { color-scheme: light dark; --fg: #1b1b1b; --bg: #fbfbf8; --muted: #666; --line: #ddd; --code: #f0efe9; --accent: #0b5cad; }
+  @media (prefers-color-scheme: dark) { :root { --fg: #e8e6e1; --bg: #141414; --muted: #9a9a9a; --line: #2e2e2e; --code: #1f1f1f; --accent: #7fb3ff; } }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 ui-sans-serif, system-ui, sans-serif; }
+  main { max-width: 46rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
+  a { color: var(--accent); }
+  h1 { font-size: 2.2rem; line-height: 1.15; margin-top: 0; }
+  h2 { margin-top: 2.5rem; border-bottom: 1px solid var(--line); padding-bottom: .3rem; }
+  pre, code { font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code); border-radius: 4px; }
+  code { padding: .1em .3em; } pre { padding: 1rem; overflow-x: auto; } pre code { padding: 0; background: none; }
+  table { border-collapse: collapse; display: block; overflow-x: auto; } th, td { border: 1px solid var(--line); padding: .35rem .6rem; text-align: left; }
+  img { max-width: 100%; }
+  footer { margin-top: 3rem; color: var(--muted); font-size: .9rem; }
+</style>
+</head>
+<body>
+<main>
+{{BODY}}
+<footer><a href="https://github.com/ponzgpt/{{REPO}}">github.com/ponzgpt/{{REPO}}</a> · by <a href="https://javierponz.technoir.cloud">Javier Ponz</a></footer>
+</main>
+</body>
+</html>

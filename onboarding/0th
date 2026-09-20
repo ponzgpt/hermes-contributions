@@ -1,0 +1,295 @@
+#!/bin/sh
+# 0TH Hermes — zero to hero, one step at a time.
+#
+# This script does NOT install Hermes Agent. Nous already wrote that installer
+# and it works; reimplementing it would only create a second thing to keep in
+# sync. What this does is the part that is actually hard for a newcomer:
+# looking at the state of your machine and naming the ONE next thing to do.
+#
+#   ./0th            same as `next`
+#   ./0th next       what to do right now, and nothing else
+#   ./0th check      preflight — can this machine install Hermes at all?
+#   ./0th install    run the official installer, then tell you what changed
+#   ./0th doctor     `hermes doctor` plus the four checks it does not cover
+#   ./0th local URL  point Hermes at a local OpenAI-compatible endpoint
+#
+# POSIX sh on purpose: it has to run on a fresh machine before anything else is.
+
+set -eu
+
+HERMES_HOME_DIR="${HERMES_HOME:-$HOME/.hermes}"
+CONFIG="$HERMES_HOME_DIR/config.yaml"
+CODE="$HERMES_HOME_DIR/hermes-agent"
+INSTALL_URL="https://hermes-agent.nousresearch.com/install.sh"
+DOCS="https://hermes-agent.nousresearch.com/docs"
+
+# ── output ───────────────────────────────────────────────────────────────────
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+  B=$(printf '\033[1m'); DIM=$(printf '\033[2m'); R=$(printf '\033[0m')
+  OK=$(printf '\033[32m'); WARN=$(printf '\033[33m'); BAD=$(printf '\033[31m')
+else
+  B=''; DIM=''; R=''; OK=''; WARN=''; BAD=''
+fi
+
+say()  { printf '%s\n' "$*"; }
+head_() { printf '\n%s%s%s\n' "$B" "$*" "$R"; }
+pass() { printf '  %s✓%s %s\n' "$OK" "$R" "$*"; }
+warn() { printf '  %s!%s %s\n' "$WARN" "$R" "$*"; }
+fail() { printf '  %s✗%s %s\n' "$BAD" "$R" "$*"; }
+note() { printf '    %s%s%s\n' "$DIM" "$*" "$R"; }
+run()  { printf '\n  %s%s%s\n\n' "$B" "$*" "$R"; }
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+# ── state ────────────────────────────────────────────────────────────────────
+# Each of these answers one yes/no question about the machine. `next` walks
+# them in order and stops at the first "no", which is the whole design: a
+# newcomer needs one instruction, not a checklist of eleven.
+
+has_git()        { have git; }
+has_hermes()     { have hermes; }
+code_present()   { [ -d "$CODE" ] || [ -d /usr/local/lib/hermes-agent ]; }
+config_present() { [ -f "$CONFIG" ]; }
+
+# ponytail: greps the YAML rather than parsing it. `model.provider` is a
+# top-level two-line shape in every config Hermes writes, so this holds today.
+# If the schema ever nests deeper, install a real parser (yq) and swap this out.
+provider_set() {
+  [ -f "$CONFIG" ] || return 1
+  awk '
+    /^model:/        { in_model = 1; next }
+    /^[^[:space:]]/  { in_model = 0 }
+    in_model && /^[[:space:]]+provider:[[:space:]]*[^[:space:]]/ { found = 1 }
+    END { exit !found }
+  ' "$CONFIG"
+}
+
+gateway_running() {
+  hermes gateway status >/dev/null 2>&1
+}
+
+# ── commands ─────────────────────────────────────────────────────────────────
+
+cmd_check() {
+  head_ "Preflight"
+  rc=0
+
+  if has_git; then pass "git $(git --version 2>/dev/null | awk '{print $3}')"
+  else fail "git is missing — the installer needs it"
+       note "Debian/Ubuntu: sudo apt install git    macOS: xcode-select --install"
+       rc=1
+  fi
+
+  if have curl; then pass "curl"
+  else fail "curl is missing"; note "Debian/Ubuntu: sudo apt install curl"; rc=1; fi
+
+  case "$(uname -s)" in
+    Linux)
+      if have xz || have unxz; then pass "xz-utils"
+      else fail "xz-utils is missing — the installer unpacks Node.js with it"
+           note "Debian/Ubuntu: sudo apt install xz-utils"; rc=1
+      fi
+      ;;
+    Darwin) pass "macOS — xz ships with the system" ;;
+  esac
+
+  # The installer pulls Python, Node and ffmpeg. Give it room.
+  avail=$(df -Pm "$HOME" 2>/dev/null | awk 'NR==2 {print $4}')
+  if [ -n "${avail:-}" ] && [ "$avail" -lt 3000 ]; then
+    warn "${avail} MB free in \$HOME — the install wants about 3 GB"
+    rc=1
+  elif [ -n "${avail:-}" ]; then
+    pass "${avail} MB free in \$HOME"
+  fi
+
+  installed=0
+  if code_present; then
+    installed=1
+    warn "Hermes is already installed at $CODE"
+  else
+    pass "no existing install to collide with"
+  fi
+
+  head_ "Verdict"
+  if [ "$installed" -eq 1 ]; then
+    say "  Already installed — installing again would not help."
+    run "./0th next"
+  elif [ "$rc" -eq 0 ]; then
+    say "  Ready."
+    run "./0th install"
+  else
+    say "  Fix the ✗ lines above, then run ${B}./0th check${R} again."
+  fi
+  return 0
+}
+
+cmd_install() {
+  if code_present; then
+    warn "Hermes is already installed. Nothing to do."
+    note "To update it later: hermes update"
+    exit 0
+  fi
+  has_git || { fail "git is missing. Run ./0th check first."; exit 1; }
+
+  head_ "Installing Hermes Agent"
+  note "This runs the official installer, unmodified:"
+  note "$INSTALL_URL"
+  say ""
+  printf "  Continue? [y/N] "
+  read -r reply
+  case "$reply" in [yY]*) ;; *) say "  Cancelled."; exit 0 ;; esac
+
+  curl -fsSL "$INSTALL_URL" | bash
+
+  head_ "Installed"
+  say "  The installer added ${B}hermes${R} to your PATH, but this shell does not"
+  say "  know that yet. That is the single most common 'it didn't work'."
+  run "source ~/.bashrc   # or ~/.zshrc, or just open a new terminal"
+  say "  Then: ${B}./0th next${R}"
+}
+
+cmd_doctor() {
+  if ! has_hermes; then
+    fail "hermes is not on PATH"
+    if code_present; then note "It is installed. Reload your shell: source ~/.bashrc"
+    else note "Not installed yet. Run ./0th install"; fi
+    exit 1
+  fi
+
+  head_ "hermes doctor"
+  hermes doctor || true
+
+  # The four things doctor does not tell a newcomer, in the order they bite.
+  head_ "0TH additions"
+
+  if config_present; then pass "config at $CONFIG"
+  else fail "no config yet — run: hermes setup"; fi
+
+  if provider_set; then
+    pass "a model provider is configured"
+  else
+    fail "no model provider set — Hermes cannot answer without one"
+    note "run: hermes model"
+  fi
+
+  if [ -f "$HERMES_HOME_DIR/auth.json" ] || [ -f "$HERMES_HOME_DIR/.env" ]; then
+    pass "credentials present"
+  else
+    warn "no auth.json or .env — fine if you use a local model, otherwise run: hermes model"
+  fi
+
+  log="$HERMES_HOME_DIR/logs/gateway.log"
+  if gateway_running; then pass "gateway is running"
+  elif [ -f "$log" ]; then
+    warn "gateway is configured but not running"
+    note "start it: hermes gateway start     logs: tail -n 50 $log"
+  else
+    note "no messaging gateway configured — that is fine, it is optional"
+  fi
+}
+
+cmd_local() {
+  url="${1:-}"
+  if [ -z "$url" ]; then
+    say "Usage: ./0th local http://127.0.0.1:8080/v1"
+    say ""
+    say "Points Hermes at any OpenAI-compatible endpoint you are already running —"
+    say "llama.cpp's server, Ollama, vLLM, LM Studio. Nothing leaves your machine."
+    exit 1
+  fi
+  has_hermes || { fail "hermes is not on PATH. Run ./0th doctor"; exit 1; }
+
+  head_ "Checking the endpoint first"
+  if curl -fsS --max-time 5 "${url%/}/models" >/dev/null 2>&1; then
+    pass "$url answers"
+  else
+    fail "nothing answered at ${url%/}/models"
+    note "Start your server first. For llama.cpp: llama-server -m MODEL.gguf --port 8080"
+    exit 1
+  fi
+
+  head_ "Wiring it up"
+  run "hermes model   # choose: Custom / OpenAI-compatible, then paste $url"
+  say "  Doing this through ${B}hermes model${R} rather than writing config.yaml"
+  say "  directly, because the wizard also sets the context length and the"
+  say "  auth mode, and those are easy to get wrong by hand."
+  say ""
+  say "  Full detail: $DOCS/user-guide/local-models"
+}
+
+cmd_next() {
+  head_ "Next step"
+
+  if ! has_git; then
+    fail "git is missing"
+    run "sudo apt install git    # or: xcode-select --install"
+    return 0
+  fi
+
+  if ! has_hermes; then
+    if code_present; then
+      warn "Hermes is installed, but this shell cannot see it."
+      run "source ~/.bashrc   # or ~/.zshrc, or open a new terminal"
+      note "This is the number one reason people think the install failed."
+    else
+      say "  Nothing installed yet."
+      run "./0th install"
+    fi
+    return 0
+  fi
+
+  if ! config_present; then
+    say "  Hermes is installed but not configured."
+    run "hermes setup --portal    # fastest: one login, 300+ models, tools included"
+    note "Prefer your own API keys, or a local model? Run: hermes setup"
+    return 0
+  fi
+
+  if ! provider_set; then
+    say "  Configured, but no model provider is chosen — so it cannot answer yet."
+    run "hermes model"
+    return 0
+  fi
+
+  pass "Installed, configured, and a provider is set."
+  say ""
+  say "  ${B}Prove it works before adding anything else:${R}"
+  run "hermes"
+  say "  Ask it something. If it answers, you are done with setup."
+  say ""
+  say "  ${DIM}Only after that:${R}"
+  say "    hermes gateway setup   put it on Telegram, Discord, Slack"
+  say "    hermes skills install  add a capability"
+  say "    hermes cron create     have it do something on a schedule"
+  say "    ./0th local URL        point it at a model on your own hardware"
+  say ""
+  note "If it did not answer: ./0th doctor"
+}
+
+cmd_help() {
+  cat <<EOF
+${B}0TH Hermes${R} — zero to hero, one step at a time
+
+  ./0th            what to do right now
+  ./0th next       the same, spelled out
+  ./0th check      can this machine install Hermes?
+  ./0th install    run the official installer
+  ./0th doctor     hermes doctor, plus the checks it does not cover
+  ./0th local URL  point Hermes at a local OpenAI-compatible endpoint
+
+This never reimplements the installer — it calls the official one at
+$INSTALL_URL and otherwise only reads the state of your machine.
+
+Official documentation: $DOCS
+EOF
+}
+
+case "${1:-next}" in
+  next|'')  cmd_next ;;
+  check)    cmd_check ;;
+  install)  cmd_install ;;
+  doctor)   cmd_doctor ;;
+  local)    shift; cmd_local "${1:-}" ;;
+  help|-h|--help) cmd_help ;;
+  *) say "Unknown command: $1"; say ""; cmd_help; exit 1 ;;
+esac
