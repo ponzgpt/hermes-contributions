@@ -19,8 +19,8 @@ export const SOURCES = {
 export const PROFILES = [
   {
     slot: 'Low-cost learner',
-    main: 'deepseek/deepseek-v4-flash',
-    aux: 'deepseek/deepseek-v4-flash',
+    main: 'deepseek/deepseek-v4-flash-0731',
+    aux: 'deepseek/deepseek-v4-flash-0731',
     when: 'You are learning the loop, the tools and the prompts. Burn tokens, not money.',
   },
   {
