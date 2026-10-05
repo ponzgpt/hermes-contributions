@@ -1,3 +1,5 @@
+> **Retired 2026-10-05.** No longer maintained or deployed; kept read-only for its history.
+
 # hermes-contributions
 
 **A heavy user and vibecoder's attempt to give something back to [Hermes Agent](https://github.com/NousResearch/hermes-agent).** Not a product, not a landing page, not a company, and not a claim of affiliation.
