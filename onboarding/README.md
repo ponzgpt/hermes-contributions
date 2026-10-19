@@ -130,15 +130,13 @@ Read it _after_ step 4, not before.
 ## The script
 
 ```bash
-curl -fsSL https://hermes-contributions.technoir.cloud/0th -o 0th && sh 0th
+curl -fsSL https://raw.githubusercontent.com/ponzgpt/hermes-contributions/main/onboarding/0th -o 0th && sh 0th
 ```
 
 It is one self-contained POSIX shell script; `git clone https://github.com/ponzgpt/hermes-contributions.git` works too.
 
-> The older URL, `raw.githubusercontent.com/ponzgpt/0th-hermes/main/0th`, still
-> resolves and always will — people piped it into a shell, so that repository is
-> archived rather than deleted. It is frozen at the day it moved. The URL above
-> is the maintained one.
+> The older `0th-hermes` repository and the `technoir.cloud` address are gone. The URL above is the only one,
+> and the script is frozen at the day this repository was archived.
 
 | Command                 | What it does                                                     |
 | ----------------------- | ---------------------------------------------------------------- |

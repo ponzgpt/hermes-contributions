@@ -1,3 +1,5 @@
+> **Historical.** The service, its routes and the redirects below were removed on 2026-10-05. Kept to show how it ran.
+
 # Deployment
 
 **Production:** https://hermes-contributions.technoir.cloud — Hostinger VPS (`ssh hoid`), Swarm service `hermes-contributions` on `dokploy-network`, Traefik route `/etc/dokploy/traefik/dynamic/hermes-contributions.yml`, Let's Encrypt. The image builds `dist/` with Node and serves it with `nginx:1.27-alpine`.

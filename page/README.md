@@ -1,7 +1,7 @@
 # Hermes Agent — landing page
 
 An unofficial landing page for [Hermes Agent](https://github.com/NousResearch/hermes-agent),
-the open-source agent by Nous Research. Live at <https://hermes-agent.technoir.cloud>.
+the open-source agent by Nous Research. Not deployed any more; open `index.html` locally.
 
 The idea it borrows from [omarchy.dacton.com/11-etch](https://omarchy.dacton.com/11-etch/) is
 that the page should behave like the thing it is selling: press <kbd>/</kbd> and you get the

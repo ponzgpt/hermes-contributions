@@ -1,31 +1,33 @@
-> **Retired 2026-10-05.** No longer maintained or deployed; kept read-only for its history.
-
 # hermes-contributions
 
-**A heavy user and vibecoder's attempt to give something back to [Hermes Agent](https://github.com/NousResearch/hermes-agent).** Not a product, not a landing page, not a company, and not a claim of affiliation.
+Everything I built around [Hermes Agent](https://github.com/NousResearch/hermes-agent) as a daily user, in one
+place: ideas for giving something back, inspired by people in the Hermes community who build in the open.
 
-Not affiliated with, endorsed by, or produced for Nous Research. No Hermes Agent code is vendored or forked here, and nothing here is a contribution to the project’s own codebase. This is one heavy user’s work built around the tool and offered back. Where anything here disagrees with the official Hermes Agent documentation, the official documentation is right.
+> **Archived.** Not maintained or deployed since 5 October 2026; kept as a record. Where anything here disagrees
+> with the [official documentation](https://hermes-agent.nousresearch.com/docs), the official documentation is right.
 
-Live at **<https://hermes-contributions.technoir.cloud>**.
+Unofficial. Not affiliated with or endorsed by Nous Research. No Hermes Agent code is vendored here, and none of
+this is a contribution to Hermes Agent's own codebase.
 
 ## What is in here
 
-Four things I built while living inside Hermes Agent every day, each of which started as its own repository, its own domain and its own service — four of everything, explaining the same thing to the same person. They are one repository now.
+| Part | What it is |
+|---|---|
+| [`onboarding/`](onboarding/) | The shortest path to a working Hermes Agent, plus `0th`, a POSIX shell script that looks at your machine and names the one next step. It never reimplements the installer; it calls the official one. |
+| [`page/`](page/) | A landing page that behaves like the CLI it describes: <kbd>/</kbd> opens the real slash-command palette, <kbd>s</kbd> cycles through the six skins Hermes ships. Readable without JavaScript. |
+| [`field-guide/`](field-guide/) | Which model to use in the main and auxiliary slots, and what each costs. The price table is generated from `upstream.json`, never typed. |
+| [`pkm-toolkit/`](pkm-toolkit/) | Four skills and a stdio MCP server that let Hermes work on a local Markdown vault (GTD, PARA, Johnny.Decimal). The filesystem is the database. |
 
-| Part                           | What it is                                                                                                                                                                                                           | Was                          |
-| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| [`onboarding/`](onboarding/)   | The shortest path to a working Hermes Agent, and `0th` — a POSIX script that looks at your machine and names the _one_ next thing to do. It never reimplements the installer; it shells out to Nous' own.            | `ponzgpt/0th-hermes`         |
-| [`page/`](page/)               | The front door, which behaves like the CLI it describes: press <kbd>/</kbd> for the real slash-command palette, <kbd>s</kbd> for the next of the six skins Hermes ships. No build step, readable without JavaScript. | `ponzgpt/hermes-agent-site`  |
-| [`field-guide/`](field-guide/) | Which model to put in the main slot and which in the auxiliary slots, and what each costs today. Generated from `upstream.json`, never typed.                                                                        | `ponzgpt/hermes-launch`      |
-| [`pkm-toolkit/`](pkm-toolkit/) | Four skills and a stdio MCP server that let Hermes work on a local Markdown vault — GTD, PARA, Johnny.Decimal. The filesystem is the database.                                                                       | `ponzgpt/hermes-pkm-toolkit` |
+Each part started as its own repository with its own site. They were merged here with their history, and the
+old repositories are no longer public.
 
-All four source repositories are archived rather than deleted, and their hosts redirect here. `raw.githubusercontent.com/ponzgpt/0th-hermes/main/0th` keeps working, because people may have piped it into a shell; the maintained copy now lives at <https://hermes-contributions.technoir.cloud/0th>.
+## The lesson worth keeping
 
-## Nothing here is allowed to rot quietly
-
-Three of those four pages stated a version number, an installer command or a model price and then went out of date without saying so. The field guide's prices were a promotional snapshot; the promotion ended, and five of its six numbers were 80% of the real ones for weeks, because nothing was watching.
-
-Everything this repository quotes from upstream now lives in one file, [`upstream.json`](upstream.json), and `scripts/freshness.mjs` re-reads all of it from what Nous publishes — the [releases API](https://github.com/NousResearch/hermes-agent/releases), the installer, the [Portal catalogue](https://inference-api.nousresearch.com/v1/models) and the docs index — on every check, every CI run, every deploy, and once a day on a schedule. When any of it has moved, the build fails and says which number changed from what to what.
+The field guide quoted model prices from a promotional snapshot. The promotion ended, and for weeks five of its six
+prices were 80% of the real ones, because nothing was watching. The fix was not correcting the numbers once. Every
+fact this repository quotes from upstream (version, installer checksum, model ids and prices) moved into one file,
+[`upstream.json`](upstream.json). [`scripts/freshness.mjs`](scripts/freshness.mjs) re-reads all of it from what Nous
+publishes, and the build fails when any value has moved, naming the value and the old and new figures:
 
 ```
 $ node scripts/freshness.mjs
@@ -34,19 +36,25 @@ $ node scripts/freshness.mjs
         upstream: $3.00/$15.00 per 1M
 ```
 
-## Commands
+## Use what is still useful
 
 ```bash
-./scripts/check.sh                   # lint, tests, build, links, upstream freshness
-npm run dev                          # build and serve on http://localhost:4321
-node scripts/refresh-upstream.mjs    # rewrite upstream.json when freshness complains
-./scripts/deploy.sh                  # check, build on the VPS, roll out, wait for /healthz
+# the PKM skills still install straight from this repository
+hermes skills install ponzgpt/hermes-contributions/pkm-toolkit/skills/hermes-pkm
+
+# run the checks locally
+npm install && ./scripts/check.sh
 ```
 
-See [AGENTS.md](AGENTS.md) for the rules and [DEPLOYMENT.md](DEPLOYMENT.md) for production.
+## How this was made
+
+I'm a vibe coder. I decided what to build, wrote the spec and the rules it had to follow, and tested the result
+until it did what I said. AI coding agents wrote the code; I don't write code by hand. Commits under my name were
+made by an agent working for me.
 
 ## Credit
 
-Nous Research wrote Hermes Agent, its installer and its documentation, all of which are good. Everything here is the thin layer a newcomer needed on top, written by someone who needed it. Where any of it disagrees with [the official docs](https://hermes-agent.nousresearch.com/docs), the official docs are right — please open an issue.
+Nous Research wrote Hermes Agent, its installer and its documentation. This repository is the thin layer one
+newcomer needed on top of them.
 
 MIT. See [LICENSE](LICENSE).
